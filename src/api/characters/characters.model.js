@@ -7,6 +7,7 @@ const characterSchema = new Schema(
     profession: { type: String, required: true, trim: true },
     sanity: { type: Number, required: true, trim: true },
     image: { type: String, required: false, trim: true },
+    provenance: { type: String, required: false, trim: true },
     adversary: {
       type: Schema.Types.ObjectId,
       required: false,
