@@ -34,7 +34,7 @@ const postNewPlace = async (req, res, next) => {
     }
 }
 
-const putPlace = async (rreq, res, next) => {
+const putPlace = async (req, res, next) => {
     try {
         const {id} = req.params;
         const putPlace = new Place(req.body);
