@@ -1,4 +1,5 @@
 const express = require("express");
+const { isAdmin } = require('../../utils/middlewares/auth.middlewares');
 const {
   getAllCharacters,
   getCharacter,
@@ -11,7 +12,7 @@ const CharacterRoutes = express.Router();
 
 CharacterRoutes.get("/", getAllCharacters);
 CharacterRoutes.get("/:id", getCharacter);
-CharacterRoutes.post("/", postNewCharacter);
+CharacterRoutes.post("/", [isAdmin], postNewCharacter);
 CharacterRoutes.put("/:id", putCharacter);
 CharacterRoutes.delete("/:id", deleteCharacter);
 

@@ -1,4 +1,5 @@
 const express = require("express");
+const { isAdmin } = require('../../utils/middlewares/auth.middlewares')
 const {
   getAllPlaces,
   getPlace,
@@ -11,7 +12,7 @@ const PlacesRoutes = express.Router();
 
 PlacesRoutes.get("/", getAllPlaces);
 PlacesRoutes.get("/:id", getPlace);
-PlacesRoutes.post("/", postNewPlace);
+PlacesRoutes.post("/", [isAdmin], postNewPlace);
 PlacesRoutes.put("/:id", putPlace);
 PlacesRoutes.delete("/:id", deletePlace);
 
