@@ -1,7 +1,7 @@
 const Character = require("./characters.model");
 const getAllCharacters = async (req, res, next) => {
   try {
-    const characters = await Character.find().populate("creatures");
+    const characters = await Character.find().populate("creatures").populate('places');
     return res.status(200).json(characters);
   } catch (error) {
     return next(error);
@@ -11,7 +11,7 @@ const getAllCharacters = async (req, res, next) => {
 const getCharacter = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const character = await Character.findById(id).populate("creatures");
+    const character = await Character.findById(id).populate("creatures").populate('places');
     if (!character) {
       const error = new Error("No character found");
       error.status = 404;
