@@ -1,5 +1,5 @@
 const express = require("express");
-const { isAdmin } = require('../../utils/middlewares/auth.middlewares')
+const { isAuthenticated } = require("../../utils/middlewares/auth.middlewares");
 const {
   getAllPlaces,
   getPlace,
@@ -8,12 +8,14 @@ const {
   deletePlace,
 } = require("./places.controller");
 
+const upload = require("../../utils/middlewares/uploadFile.middleware");
+
 const PlacesRoutes = express.Router();
 
 PlacesRoutes.get("/", getAllPlaces);
 PlacesRoutes.get("/:id", getPlace);
-PlacesRoutes.post("/", [isAdmin], postNewPlace);
-PlacesRoutes.put("/:id", putPlace);
+PlacesRoutes.post("/", upload.single("image"), postNewPlace);
+PlacesRoutes.put("/:id", upload.single("image"), putPlace);
 PlacesRoutes.delete("/:id", deletePlace);
 
 module.exports = PlacesRoutes;

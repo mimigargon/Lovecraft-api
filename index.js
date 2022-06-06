@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const cloudinary = require('cloudinary').v2;
 require('./src/utils/auth/index');
 dotenv.config();
 
@@ -13,8 +14,16 @@ const PlacesRoutes = require("./src/api/places/places.routes");
 const UserRoutes = require('./src/api/users/users.routes');
 
 const { connectDb } = require("./src/utils/database/db");
+const { isAuthenticated } = require("./src/utils/middlewares/auth.middlewares");
+
 
 const PORT = process.env.PORT || 8080;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+})
 
 const app = express();
 app.disable('x-powered-by');
@@ -59,13 +68,13 @@ app.use(
 
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
 
-app.use("/characters", CharactersRoutes);
+app.use("/characters", [isAuthenticated], CharactersRoutes);
 
-app.use('/creatures', CreaturesRoutes);
+app.use('/creatures', [isAuthenticated], CreaturesRoutes);
 
-app.use('/places', PlacesRoutes);
+app.use('/places', [isAuthenticated], PlacesRoutes);
 
-app.use('/users', UserRoutes);
+app.use('/users', [isAuthenticated], UserRoutes);
 
 app.use("/", (req, res) => {
   return res.status(200).json("Mi api de Lovecraft");

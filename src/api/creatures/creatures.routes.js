@@ -1,5 +1,5 @@
 const express = require("express");
-const { isAdmin } = require("../../utils/middlewares/auth.middlewares");
+const { isAuthenticated } = require("../../utils/middlewares/auth.middlewares");
 const {
   getAllCreatures,
   getCreature,
@@ -8,12 +8,14 @@ const {
   deleteCreature,
 } = require("./creatures.controller");
 
+const upload = require("../../utils/middlewares/uploadFile.middleware");
+
 const CreaturesRoutes = express.Router();
 
 CreaturesRoutes.get("/", getAllCreatures);
 CreaturesRoutes.get("/:id", getCreature);
-CreaturesRoutes.post("/", [isAdmin], postNewCreature);
-CreaturesRoutes.put("/:id", putCreature);
+CreaturesRoutes.post("/", upload.single("image"), postNewCreature);
+CreaturesRoutes.put("/:id", upload.single("image"), putCreature);
 CreaturesRoutes.delete("/:id", deleteCreature);
 
 module.exports = CreaturesRoutes;

@@ -1,5 +1,5 @@
 const express = require("express");
-const { isAdmin } = require('../../utils/middlewares/auth.middlewares');
+const { isAuthenticated } = require("../../utils/middlewares/auth.middlewares");
 const {
   getAllCharacters,
   getCharacter,
@@ -8,12 +8,14 @@ const {
   deleteCharacter,
 } = require("./characters.controller");
 
+const upload = require("../../utils/middlewares/uploadFile.middleware");
+
 const CharacterRoutes = express.Router();
 
 CharacterRoutes.get("/", getAllCharacters);
 CharacterRoutes.get("/:id", getCharacter);
-CharacterRoutes.post("/", [isAdmin], postNewCharacter);
-CharacterRoutes.put("/:id", putCharacter);
+CharacterRoutes.post("/", upload.single("image"), postNewCharacter);
+CharacterRoutes.put("/:id", upload.single("image"), putCharacter);
 CharacterRoutes.delete("/:id", deleteCharacter);
 
 module.exports = CharacterRoutes;

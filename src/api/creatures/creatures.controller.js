@@ -1,3 +1,4 @@
+const { deleteFile } = require("../../utils/middlewares/deleteFile.middleware");
 const Creature = require("./creatures.model");
 
 const getAllCreatures = async (req, res, next) => {
@@ -27,6 +28,9 @@ const getCreature = async (req, res, next) => {
 const postNewCreature = async (req, res, next) => {
   try {
     const newCreature = new Creature(req.body);
+    if (req.file) {
+      newCreature.image = req.file.path;
+    }
     const creatureDB = await newCreature.save();
     return res.status(201).json(creatureDB);
   } catch (error) {
@@ -39,11 +43,17 @@ const putCreature = async (req, res, next) => {
     const { id } = req.params;
     const putCreature = new Creature(req.body);
     putCreature._id = id;
+    if (req.file) {
+      putCreature.image = req.file.path;
+    }
     const creatureDB = await Creature.findByIdAndUpdate(id, putCreature);
     if (!creatureDB) {
       const error = new Error("No creature found");
       error.status = 404;
       return next(error);
+    }
+    if (creatureDB.image) {
+      deleteFile(creatureDB.image);
     }
     return res.status(200).json(creatureDB);
   } catch (error) {
@@ -59,6 +69,9 @@ const deleteCreature = async (req, res, next) => {
       const error = new Error("No creature found");
       error.status = 404;
       return next(error);
+    }
+    if (creatureDB.image) {
+      deleteFile(creatureDB.image);
     }
     return res.status(200).json(creatureDB);
   } catch (error) {
